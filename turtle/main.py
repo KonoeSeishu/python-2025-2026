@@ -1,60 +1,36 @@
-import turtle 
-import time
-import snake
+import time,turtle
+from snake import *
+from food import *
+
 
 window = turtle.Screen()
-window.title("nya nya")
-window.bgcolor("black")
-window.setup(width=1920, height=1080)
-turtle.color("white", "black")
+window.title("Snake")
+width = 700
+height = 700
+window.setup(width, height)
+window.bgcolor("yellow")
 
+snake = Snake(0, 0)
+window.listen() #nasluchujemy klawiature
 
-
-
-def exit():
-    turtle.bye()
-
-def rotate_up():
-    turtle.setheading(90)
-    # turtle.fd(30)
-    
-def rotate_left():
-    turtle.setheading(180)
-    # turtle.fd(30)
-
-def rotate_down():
-    turtle.setheading(270)
-    # turtle.fd(30)
-
-def rotate_right():
-    turtle.setheading(0)
-    # turtle.fd(30)
-    
-
-turtle.onkey(rotate_up, "w")
-turtle.onkey(rotate_left, "a")
-turtle.onkey(rotate_down, "s")
-turtle.onkey(rotate_right, "d")
-turtle.onkey(exit, "space")
-
-
-
-loop_delay = 0
-
-turtle.listen()
-window.tracer(0)
-
-
-
+window.onkey(snake.keyUP, "Up") #przekazujemy przyciski ktore chcemy nasluchiwac
+window.onkey(snake.keyDOWN, "Down")
+window.onkey(snake.keyLEFT, "Left")
+window.onkey(snake.keyRIGHT, "Right")
+window.onkey(snake.keyUP, "w")
+window.onkey(snake.keyDOWN, "s")
+window.onkey(snake.keyLEFT, "a")
+window.onkey(snake.keyRIGHT, "d")
+food = Food()
 while True:
     window.update()
-    time.sleep(0.001)
-    loop_delay+=1
-    
-    while loop_delay==20:
-        turtle.forward(movement_speed)
-        print(str(turtle.xcor()))
-        print(str(turtle.ycor()))
-        loop_delay=0
-    
-#turtle.mainloop()
+    time.sleep(0.1)
+    snake.move()
+
+    if snake.head.distance(food) < 20:
+        food.refresh()
+        snake.extend()
+
+    if snake.checkSelfCollision() or snake.checkWallCollision(width, height):
+        food.refresh()
+        snake.refresh()
